@@ -8,74 +8,113 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* White */
-    --foreground: 222.2 84% 4.9%; /* Dark Blue/Black */
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%; /* Dark Blue - Can adjust if needed elsewhere */
-    --primary-foreground: 210 40% 98%; /* Light */
-    --secondary: 210 40% 96.1%; /* Light Gray */
-    --secondary-foreground: 222.2 47.4% 11.2%; /* Dark */
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 180 100% 25.1%; /* Teal #008080 */
-    --accent-foreground: 0 0% 98%; /* White/Light text on Accent */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 180 100% 25.1%; /* Teal for focus rings */
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    /* Gold Palette Variables */
+    --gold-primary: 43 74% 49%;    /* #D4AF37 - Mapped from HSL for consistency */
+    --gold-light: 51 100% 50%;     /* #FFD700 - Mapped from HSL */
+    --gold-dark: 43 74% 36%;      /* #B8860B - Mapped from HSL */
+    --gold-pale: 56 44% 80%;       /* #EEE8AA - Mapped from HSL */
+    --gold-deep: 35 25% 44%;       /* #8B7355 - Mapped from HSL */
+    --gold-bg: 39 100% 97%;       /* #FFFAF0 - Mapped from HSL */
+    --white: 0 0% 100%;
+    --black: 0 0% 0%;
+    --neutral-dark: 240 5% 15%; /* Darker neutral for text */
+    --neutral-light: 240 5% 95%; /* Lighter neutral for cards */
+
+    /* ShadCN Theme Mapping using Gold Palette */
+    --background: var(--gold-bg);                 /* 39 100% 97% */
+    --foreground: var(--neutral-dark);            /* 240 5% 15% */
+
+    --card: var(--white);                        /* 0 0% 100% */
+    --card-foreground: var(--neutral-dark);       /* 240 5% 15% */
+
+    --popover: var(--white);                     /* 0 0% 100% */
+    --popover-foreground: var(--neutral-dark);    /* 240 5% 15% */
+
+    --primary: var(--gold-primary);               /* 43 74% 49% */
+    --primary-foreground: var(--black);          /* 0 0% 0% */
+
+    --secondary: var(--gold-pale);                /* 56 44% 80% */
+    --secondary-foreground: var(--gold-dark);     /* 43 74% 36% */
+
+    --muted: var(--gold-pale);                    /* 56 44% 80% */
+    --muted-foreground: var(--gold-deep);         /* 35 25% 44% */
+
+    --accent: var(--gold-dark);                   /* 43 74% 36% */
+    --accent-foreground: var(--white);           /* 0 0% 100% */
+
+    --destructive: 0 84.2% 60.2%;                 /* Default Red */
+    --destructive-foreground: var(--white);      /* 0 0% 100% */
+
+    --border: var(--gold-pale);                   /* 56 44% 80% */
+    --input: var(--gold-pale);                    /* 56 44% 80% */
+    --ring: var(--gold-primary);                  /* 43 74% 49% */
+
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Chart colors - Can be adjusted */
+    --chart-1: var(--gold-primary);
+    --chart-2: var(--gold-dark);
+    --chart-3: var(--gold-deep);
+    --chart-4: var(--gold-light);
+    --chart-5: var(--gold-pale);
+
+    /* Sidebar colors (example using gold theme) */
+    --sidebar-background: var(--gold-pale);
+    --sidebar-foreground: var(--gold-deep);
+    --sidebar-primary: var(--gold-primary);
+    --sidebar-primary-foreground: var(--black);
+    --sidebar-accent: var(--gold-bg);
+    --sidebar-accent-foreground: var(--gold-dark);
+    --sidebar-border: var(--gold-dark);
+    --sidebar-ring: var(--gold-primary);
   }
+
   .dark {
-    /* Define dark theme if needed, otherwise keep light theme as default */
-    --background: 222.2 84% 4.9%; /* Dark Blue/Black */
-    --foreground: 210 40% 98%; /* Light */
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%; /* Darker Gray */
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 180 100% 25.1%; /* Teal */
-    --accent-foreground: 0 0% 98%; /* Light text on Accent */
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 180 100% 25.1%; /* Teal for focus rings */
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Optional: Define a dark theme variant if needed */
+    --background: var(--neutral-dark);            /* 240 5% 15% */
+    --foreground: var(--gold-pale);               /* 56 44% 80% */
+
+    --card: var(--black);                        /* 0 0% 0% */
+    --card-foreground: var(--gold-pale);          /* 56 44% 80% */
+
+    --popover: var(--black);                     /* 0 0% 0% */
+    --popover-foreground: var(--gold-pale);       /* 56 44% 80% */
+
+    --primary: var(--gold-light);                 /* 51 100% 50% */
+    --primary-foreground: var(--black);          /* 0 0% 0% */
+
+    --secondary: var(--gold-deep);                /* 35 25% 44% */
+    --secondary-foreground: var(--gold-pale);     /* 56 44% 80% */
+
+    --muted: var(--gold-deep);                    /* 35 25% 44% */
+    --muted-foreground: var(--gold-pale);         /* 56 44% 80% */
+
+    --accent: var(--gold-primary);                /* 43 74% 49% */
+    --accent-foreground: var(--black);           /* 0 0% 0% */
+
+    --destructive: 0 62.8% 30.6%;                 /* Default Dark Red */
+    --destructive-foreground: var(--white);      /* 0 0% 100% */
+
+    --border: var(--gold-deep);                   /* 35 25% 44% */
+    --input: var(--gold-deep);                    /* 35 25% 44% */
+    --ring: var(--gold-light);                  /* 51 100% 50% */
+
+    /* Dark Chart colors */
+    --chart-1: var(--gold-light);
+    --chart-2: var(--gold-primary);
+    --chart-3: var(--gold-pale);
+    --chart-4: var(--gold-dark);
+    --chart-5: var(--gold-deep);
+
+    /* Dark Sidebar colors */
+    --sidebar-background: var(--black);
+    --sidebar-foreground: var(--gold-pale);
+    --sidebar-primary: var(--gold-light);
+    --sidebar-primary-foreground: var(--black);
+    --sidebar-accent: var(--gold-deep);
+    --sidebar-accent-foreground: var(--gold-pale);
+    --sidebar-border: var(--gold-deep);
+    --sidebar-ring: var(--gold-light);
   }
 }
 
@@ -84,6 +123,6 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-secondary text-foreground; /* Use secondary (light gray) as main bg */
+    @apply bg-background text-foreground; /* Use main gold background */
   }
 }

@@ -1,29 +1,46 @@
 'use client';
 
 import type { NextPage } from 'next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { scrapeConcursos } from './actions';
 import StateSelector from '@/components/StateSelector';
 import ConcursoTable from '@/components/ConcursoTable';
+import InfoDialog from '@/components/InfoDialog'; // Import the new InfoDialog component
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
-import type { ConcursoData } from '@/types/concursos'; // Ensure this path is correct
+import { Loader2, Info } from 'lucide-react'; // Import Info icon
+import type { ConcursoData } from '@/types/concursos';
+
+const LOCAL_STORAGE_KEY = 'concursoScraperSelectedState';
 
 const Home: NextPage = () => {
   const [selectedState, setSelectedState] = useState<string>('');
   const [concursos, setConcursos] = useState<ConcursoData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false); // State for InfoDialog
+
+  // Load selected state from localStorage on initial render
+  useEffect(() => {
+    const storedState = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (storedState) {
+      setSelectedState(storedState);
+      // Optionally, trigger search automatically if a state was stored
+      // handleSearch(storedState);
+    }
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   const handleStateChange = (state: string) => {
     setSelectedState(state);
     setConcursos(null); // Reset concursos when state changes
     setError(null);
+    // Save selected state to localStorage
+    localStorage.setItem(LOCAL_STORAGE_KEY, state);
   };
 
-  const handleSearch = async () => {
-    if (!selectedState) {
+  const handleSearch = async (stateToSearch?: string) => {
+    const state = stateToSearch || selectedState; // Use provided state or component state
+    if (!state) {
       setError('Por favor, selecione um estado.');
       return;
     }
@@ -31,53 +48,60 @@ const Home: NextPage = () => {
     setError(null);
     setConcursos(null); // Clear previous results before fetching new ones
     try {
-      const data = await scrapeConcursos(selectedState);
+      const data = await scrapeConcursos(state);
       setConcursos(data);
-      console.log("Scraped data:", data); // Log the received data structure
+      // console.log("Scraped data:", data);
     } catch (err) {
       console.error('Scraping failed:', err);
        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
       setError(`Falha ao buscar os dados: ${errorMessage}`);
-      // Set to empty state on error to avoid null issues later
       setConcursos({ headers: [], openRows: [], predictedRows: [] });
     } finally {
       setLoading(false);
     }
   };
 
-  // Determine if there are any results (either open or predicted rows)
   const hasResults = concursos && (concursos.openRows.length > 0 || concursos.predictedRows.length > 0);
-  // Show the "No Results" message only if:
-  // - Not loading
-  // - No error occurred
-  // - `concursos` object exists (meaning search was attempted)
-  // - `hasResults` is false (neither open nor predicted rows found)
   const showNoResultsMessage = !loading && !error && concursos !== null && !hasResults;
 
-
   return (
-    <div className="min-h-screen bg-secondary flex flex-col items-center py-10 px-4">
-      <header className="w-full max-w-4xl mb-8 text-center">
-        <h1 className="text-4xl font-bold text-foreground mb-2">ConcursoScraper</h1>
-        <p className="text-lg text-muted-foreground">Encontre concursos públicos por estado.</p>
+    <div className="min-h-screen bg-background flex flex-col items-center py-10 px-4">
+      <header className="w-full max-w-5xl mb-8 text-center relative">
+        <h1 className="text-5xl font-bold text-primary mb-3">ConcursoScraper</h1>
+        <p className="text-xl text-muted-foreground">Seu portal de concursos públicos.</p>
+         {/* Info Button */}
+         <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-0 right-0 mt-2 mr-2 text-accent hover:text-accent-foreground"
+            onClick={() => setIsInfoDialogOpen(true)}
+            aria-label="Informações do Projeto"
+          >
+            <Info className="h-6 w-6" />
+          </Button>
       </header>
 
-      <Card className="w-full max-w-4xl shadow-lg bg-card">
+      <Card className="w-full max-w-5xl shadow-lg bg-card rounded-xl border-primary border-2">
         <CardHeader>
-          <CardTitle>Selecione o Estado</CardTitle>
-          <CardDescription>Escolha um estado para buscar os concursos disponíveis.</CardDescription>
+          <CardTitle className="text-2xl text-primary">Selecione o Estado</CardTitle>
+          <CardDescription className="text-muted-foreground">Escolha um estado para visualizar os concursos.</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col sm:flex-row items-center gap-4">
+        <CardContent className="flex flex-col sm:flex-row items-center gap-4 p-6">
           <StateSelector selectedState={selectedState} onStateChange={handleStateChange} />
-          <Button onClick={handleSearch} disabled={loading || !selectedState} className="w-full sm:w-auto">
-            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+          <Button
+            onClick={() => handleSearch()} // Pass explicitly to ensure current state is used
+            disabled={loading || !selectedState}
+            className="w-full sm:w-auto bg-primary hover:bg-gold-dark text-primary-foreground rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-105"
+            size="lg"
+          >
+            {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
             {loading ? 'Buscando...' : 'Buscar Concursos'}
           </Button>
         </CardContent>
       </Card>
 
       {error && (
-        <Card className="mt-8 w-full max-w-4xl shadow-lg bg-destructive text-destructive-foreground">
+        <Card className="mt-8 w-full max-w-5xl shadow-lg bg-destructive text-destructive-foreground rounded-xl">
            <CardHeader>
              <CardTitle>Erro</CardTitle>
            </CardHeader>
@@ -88,33 +112,27 @@ const Home: NextPage = () => {
       )}
 
       {loading && (
-        <div className="mt-8 w-full max-w-4xl flex justify-center items-center h-64">
-          <Loader2 className="h-12 w-12 animate-spin text-accent" />
+        <div className="mt-8 w-full max-w-5xl flex justify-center items-center h-64">
+          <Loader2 className="h-16 w-16 animate-spin text-primary" />
         </div>
       )}
 
-      {/* Display Results Area - Only show if not loading and no error */}
       {!loading && !error && concursos && (
-        <div className="mt-8 w-full max-w-4xl space-y-8">
-          {/* Display Open Concursos Table if rows exist */}
+        <div className="mt-8 w-full max-w-5xl space-y-8">
           <ConcursoTable
             title="Concursos Abertos e em Andamento"
             headers={concursos.headers}
             rows={concursos.openRows}
           />
-
-          {/* Display Predicted Concursos Table if rows exist */}
           <ConcursoTable
             title="Concursos Previstos"
             headers={concursos.headers}
             rows={concursos.predictedRows}
           />
-
-          {/* Display "No Results" message if applicable */}
           {showNoResultsMessage && (
-             <Card className="shadow-lg bg-card">
+             <Card className="shadow-lg bg-card rounded-xl border border-secondary">
                 <CardHeader>
-                    <CardTitle>Nenhum Concurso Encontrado</CardTitle>
+                    <CardTitle className="text-primary">Nenhum Concurso Encontrado</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <p className="text-muted-foreground">Não foram encontrados concursos (abertos, em andamento ou previstos) para o estado selecionado no momento.</p>
@@ -124,9 +142,12 @@ const Home: NextPage = () => {
         </div>
       )}
 
+       {/* Info Dialog */}
+       <InfoDialog open={isInfoDialogOpen} onOpenChange={setIsInfoDialogOpen} />
 
-      <footer className="w-full max-w-4xl mt-10 pt-5 border-t text-center text-muted-foreground">
-        <p>Desenvolvido com Next.js e ShadCN UI</p>
+
+      <footer className="w-full max-w-5xl mt-12 pt-6 border-t border-gold-pale text-center text-muted-foreground">
+        <p>Desenvolvido com Next.js, ShadCN UI e <span className="text-primary font-semibold">Paixão</span>.</p>
       </footer>
     </div>
   );

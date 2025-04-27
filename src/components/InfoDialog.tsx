@@ -1,0 +1,82 @@
+'use client';
+
+import * as React from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Info, Code, Database, Palette } from 'lucide-react'; // Import relevant icons
+
+interface InfoDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const InfoDialog: React.FC<InfoDialogProps> = ({ open, onOpenChange }) => {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[480px] bg-card border-primary rounded-lg shadow-xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-xl text-primary">
+            <Info className="h-6 w-6" />
+            Sobre o ConcursoScraper
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground pt-2">
+            Informações sobre o projeto e tecnologias utilizadas.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4 text-foreground">
+          <div className="flex items-start gap-3">
+            <Code className="h-5 w-5 mt-1 text-primary flex-shrink-0" />
+            <div>
+              <h4 className="font-semibold">Propósito</h4>
+              <p className="text-sm text-muted-foreground">
+                Este aplicativo web foi desenvolvido para facilitar a busca por concursos públicos no Brasil, agregando informações por estado a partir do site Concursos no Brasil.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <Database className="h-5 w-5 mt-1 text-primary flex-shrink-0" />
+            <div>
+              <h4 className="font-semibold">Fonte de Dados</h4>
+              <p className="text-sm text-muted-foreground">
+                Os dados são obtidos através de web scraping do site{' '}
+                <a href="https://concursosnobrasil.com/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+                  concursosnobrasil.com
+                </a>.
+                A precisão e disponibilidade das informações dependem da fonte original.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <Palette className="h-5 w-5 mt-1 text-primary flex-shrink-0" />
+            <div>
+              <h4 className="font-semibold">Tecnologias</h4>
+              <p className="text-sm text-muted-foreground">
+                Desenvolvido com Next.js (App Router), React, TypeScript, Tailwind CSS, ShadCN UI para componentes, Cheerio para scraping e configurado como Progressive Web App (PWA).
+              </p>
+            </div>
+          </div>
+           <p className="text-xs text-muted-foreground pt-2">
+            Nota: Web scraping pode ser sensível a mudanças na estrutura do site de origem.
+          </p>
+        </div>
+        <DialogFooter>
+          <Button
+            onClick={() => onOpenChange(false)}
+            className="bg-primary hover:bg-gold-dark text-primary-foreground"
+          >
+            Fechar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default InfoDialog;

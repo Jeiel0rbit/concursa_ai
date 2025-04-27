@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from "react";
-import { MapPin } from 'lucide-react'; // Example icon
+import { MapPin } from 'lucide-react';
 
 import {
   Select,
@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils"; // Import cn utility
 
 interface StateSelectorProps {
   selectedState: string;
@@ -49,13 +50,20 @@ const states = [
 const StateSelector: React.FC<StateSelectorProps> = ({ selectedState, onStateChange }) => {
   return (
     <Select onValueChange={onStateChange} value={selectedState}>
-      <SelectTrigger className="w-full sm:w-[280px]">
-        <MapPin className="mr-2 h-4 w-4 text-muted-foreground" />
-        <SelectValue placeholder="Selecione um estado" />
+      <SelectTrigger className={cn(
+        "w-full sm:w-[280px] h-12 text-base rounded-lg border-primary focus:ring-primary focus:border-primary transition duration-200", // Base styles
+        "bg-card text-foreground" // Colors from theme
+      )}>
+        <MapPin className="mr-2 h-5 w-5 text-primary" /> {/* Icon with theme color */}
+        <SelectValue placeholder="Selecione um estado..." />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-card border-secondary rounded-lg shadow-lg"> {/* Styled dropdown */}
         {states.map((state) => (
-          <SelectItem key={state.value} value={state.value}>
+          <SelectItem
+            key={state.value}
+            value={state.value}
+            className="cursor-pointer hover:bg-secondary focus:bg-secondary rounded-md" // Hover/focus styles
+          >
             {state.label}
           </SelectItem>
         ))}

@@ -86,9 +86,9 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
                  headers.push(text);
              }
          });
-         console.log('Using first tbody row for headers:', headers);
+         // console.log('Using first tbody row for headers:', headers);
      } else {
-       console.log('Using thead for headers:', headers);
+       // console.log('Using thead for headers:', headers);
      }
 
      if (headers.length === 0) {
@@ -112,7 +112,7 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
           const cellContentClone = firstCell.clone();
           cellContentClone.find('div.label-previsto').remove(); // Remove the label
           predictedContent = cellContentClone.html()?.trim() || null; // Get the remaining HTML
-          console.log("Found and extracted predicted content HTML:", predictedContent);
+          // console.log("Found and extracted predicted content HTML:", predictedContent);
           return; // Skip adding this row to the main concours list
       }
 
@@ -141,7 +141,7 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
        }
     });
 
-    console.log(`Found ${rows.length} regular contest rows.`);
+    // console.log(`Found ${rows.length} regular contest rows.`);
     if (!predictedContent) {
         console.warn(`Predicted content element containing 'div.label-previsto' not found in any row's first cell.`);
     }

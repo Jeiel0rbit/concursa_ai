@@ -21,20 +21,20 @@ const ConcursoTable: React.FC<ConcursoTableProps> = ({ data }) => {
   // Check specifically if there are rows to display
   if (!data || !data.rows || data.rows.length === 0) {
     // If predicted contests exist, don't show this message, otherwise inform the user.
-    if (!data?.predicted) {
-       return (
-         <Card className="mt-8 shadow-lg bg-card">
-           <CardHeader>
-             <CardTitle>Nenhum Concurso Ativo Encontrado</CardTitle>
-           </CardHeader>
-           <CardContent>
-             <p className="text-muted-foreground">Não foram encontrados concursos ativos para o estado selecionado no momento. Verifique a seção de previstos, se disponível.</p>
-           </CardContent>
-         </Card>
-       );
+    if (data?.predicted) {
+        return null; // Render nothing for the main table if only predicted exists
     }
-    // If there are predicted contests but no active ones, render nothing here.
-    return null;
+    // Only show this card if there are no rows AND no predicted content
+    return (
+        <Card className="mt-8 shadow-lg bg-card">
+        <CardHeader>
+            <CardTitle>Nenhum Concurso Encontrado</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <p className="text-muted-foreground">Não foram encontrados concursos (ativos ou previstos) para o estado selecionado no momento.</p>
+        </CardContent>
+        </Card>
+    );
   }
 
    // Check if headers are present. If not, don't render the table header.

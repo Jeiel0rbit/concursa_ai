@@ -20,8 +20,16 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, children, ...props }, ref) => {
-  // Explicit return to avoid potential whitespace from implicit return parenthesis
-  return <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props}>{children}</thead>;
+  // Use parenthesis for multi-line return to avoid potential whitespace issues
+  return (
+    <thead
+      ref={ref}
+      className={cn("[&_tr]:border-b", className)}
+      {...props}
+    >
+      {children}
+    </thead>
+  );
 });
 TableHeader.displayName = "TableHeader"
 
@@ -30,7 +38,15 @@ const TableBody = React.forwardRef<
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, children, ...props }, ref) => {
   // Explicit return to avoid potential whitespace issues
-  return <tbody ref={ref} className={cn("[&_tr:last-child]:border-0", className)} {...props}>{children}</tbody>;
+  return (
+    <tbody
+      ref={ref}
+      className={cn("[&_tr:last-child]:border-0", className)}
+      {...props}
+    >
+      {children}
+    </tbody>
+  );
 });
 TableBody.displayName = "TableBody"
 

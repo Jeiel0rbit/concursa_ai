@@ -64,13 +64,21 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
     // --- Scraping the Main Table (Open/In Progress) ---
     // Use a more specific selector if possible, #conteudo might contain other tables.
     // Let's assume the first table directly inside #conteudo is the target.
-    const tableSelector = '#conteudo > table:first-of-type';
+    const tableSelector = '#conteudo > table:first-of-type'; // Adjusted selector to be more specific
     const table = $(tableSelector);
 
     if (table.length === 0) {
        console.warn(`Main contest table not found at ${baseUrl} with selector ${tableSelector}`);
-       // If the main table isn't found, maybe the structure changed, or there are only predicted ones.
-       // We still might find predicted ones below.
+       // Attempt to find predicted content even if the main table is missing
+       let predictedContentFallback: string | null = null;
+       const predictedHeading = $('#conteudo h2:contains("Concursos Previstos"), #conteudo h3:contains("Concursos Previstos")');
+       if (predictedHeading.length > 0) {
+           predictedContentFallback = predictedHeading.next().html()?.trim() || null;
+           if (predictedContentFallback) {
+             console.log("Found predicted content following a heading (main table missing):", predictedContentFallback);
+           }
+       }
+       return { headers: [], rows: [], predicted: predictedContentFallback }; // Return empty data if table not found
     }
 
     const headers: string[] = [];
@@ -123,16 +131,21 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
 
       const firstCell = row.find('td:first-child'); // Get the first cell
 
-      // ** Check if this row is specifically marked as 'previsto' **
+      // ** Check if this row indicates 'previsto' content in its first cell **
+      // Look for the specific div structure indicating predicted contests
       const labelPrevisto = firstCell.find('div.label-previsto');
       if (labelPrevisto.length > 0 && labelPrevisto.text().trim().toLowerCase() === 'previsto') {
-          // If it's the 'previsto' row within the main table, extract the HTML content of the first cell
-          // Clone the cell, remove the label div, then get the html
-          const cellContentClone = firstCell.clone();
-          cellContentClone.find('div.label-previsto').remove(); // Remove the label
-          predictedContent = cellContentClone.html()?.trim() || null; // Get the remaining HTML
-          // console.log("Found and extracted predicted content HTML from main table:", predictedContent);
-          return; // Skip adding this row to the main 'open' concours list
+          // If it's the 'previsto' row and we haven't found predicted content yet
+          if (!predictedContent) {
+              // Extract the HTML content of the first cell, *excluding* the 'previsto' label itself.
+              const cellContentClone = firstCell.clone();
+              cellContentClone.find('div.label-previsto').remove(); // Remove the label
+              predictedContent = cellContentClone.html()?.trim() || null; // Get the remaining HTML
+              // console.log("Found and extracted predicted content HTML from first cell of a 'previsto' marked row:", predictedContent);
+          }
+          // Skip adding this row to the main 'open' concours list, regardless of whether we extracted content
+          // (in case multiple rows are marked, we only take the first one's content)
+          return;
       }
 
       // --- Process as a regular (open/in progress) contest row ---
@@ -161,9 +174,8 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
 
     // console.log(`Found ${rows.length} regular contest rows in main table.`);
 
-    // If we didn't find the 'previsto' label in the main table,
-    // check common locations like a dedicated section or a differently structured table.
-    // This part might need adjustment based on the actual site structure for predicted contests.
+    // Fallback: If we didn't find the 'previsto' label in any table row's first cell,
+    // check common alternative locations like a dedicated section or a differently structured table.
     if (!predictedContent) {
         // Example: Look for a specific heading and the content following it
         const predictedHeading = $('#conteudo h2:contains("Concursos Previstos"), #conteudo h3:contains("Concursos Previstos")');

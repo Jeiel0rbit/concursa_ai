@@ -33,12 +33,7 @@ const Home: NextPage = () => {
     try {
       const data = await scrapeConcursos(selectedState);
       setConcursos(data);
-      if (data.rows.length === 0 && !data.predicted) {
-        // Optional: Set a specific message if both regular and predicted are empty
-        console.log("No regular or predicted contests found after scraping.");
-        // The ConcursoTable component will handle the empty 'rows' case.
-        // The Predicted section below handles the empty 'predicted' case.
-      }
+      // Logging removed, main check below handles display logic
     } catch (err) {
       console.error('Scraping failed:', err);
        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
@@ -51,7 +46,12 @@ const Home: NextPage = () => {
 
   // Determine if there are any results (either regular rows or predicted content)
   const hasResults = concursos && (concursos.rows.length > 0 || !!concursos.predicted);
-  const showNoResultsMessage = !loading && !error && concursos && !hasResults;
+  // Show the "No Results" message only if:
+  // - Not loading
+  // - No error occurred
+  // - `concursos` object exists (meaning search was attempted)
+  // - `hasResults` is false (neither rows nor predicted content found)
+  const showNoResultsMessage = !loading && !error && concursos !== null && !hasResults;
 
 
   return (
@@ -95,11 +95,12 @@ const Home: NextPage = () => {
       {/* Display Results Area - Only show if not loading and no error */}
       {!loading && !error && concursos && (
         <>
-          {/* Display Regular Concursos Table */}
-          {/* ConcursoTable handles the case where data.rows is empty */}
-          <div className="mt-8 w-full max-w-4xl">
-            <ConcursoTable data={concursos} />
-          </div>
+          {/* Display Regular Concursos Table if rows exist */}
+          {concursos.rows.length > 0 && (
+             <div className="mt-8 w-full max-w-4xl">
+                <ConcursoTable data={concursos} />
+             </div>
+          )}
 
           {/* Display Predicted Concursos if available */}
           {concursos.predicted && (
@@ -110,13 +111,14 @@ const Home: NextPage = () => {
               </CardHeader>
               <CardContent>
                 {/* Render the scraped HTML content using dangerouslySetInnerHTML. */}
-                <div className="prose prose-sm max-w-none dark:prose-invert" // Basic prose styling
+                {/* Adding basic prose styling for better readability of unknown HTML structure */}
+                <div className="prose prose-sm max-w-none dark:prose-invert text-foreground"
                      dangerouslySetInnerHTML={{ __html: concursos.predicted }} />
               </CardContent>
             </Card>
           )}
 
-          {/* Display "No Results" message if applicable */}
+          {/* Display "No Results" message if applicable (neither rows nor predicted found) */}
           {showNoResultsMessage && (
              <Card className="mt-8 w-full max-w-4xl shadow-lg bg-card">
                 <CardHeader>

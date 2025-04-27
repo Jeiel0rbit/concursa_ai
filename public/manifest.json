@@ -1,5 +1,5 @@
 {
-  "name": "ConcursoScraper",
+  "name": "Concursa Aí",
   "short_name": "Concursos",
   "description": "Encontre concursos públicos por estado.",
   "start_url": "/",
@@ -8,12 +8,12 @@
   "theme_color": "#D4AF37",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "/icons/logo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "/icons/logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }

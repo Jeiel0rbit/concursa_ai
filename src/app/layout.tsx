@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'ConcursoScraper', // Update title
+  title: 'Concursa Aí', // Update title
   description: 'Encontre concursos públicos por estado.', // Update description
   manifest: '/manifest.json', // Add manifest link
 };

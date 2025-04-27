@@ -64,7 +64,7 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
 
     if (table.length === 0) {
        console.warn(`Table not found at ${url} with selector ${tableSelector}`);
-       return { headers: [], rows: [] }; // Return empty data if table not found
+       return { headers: [], rows: [], predicted: null }; // Return empty data if table not found
     }
 
     const headers: string[] = [];
@@ -106,7 +106,26 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
          }
     });
 
-    return { headers, rows };
+     // --- Scraping Predicted Content ---
+    // XPath: //*[@id="conteudo"]/table/tbody/tr[7]/td[1]/div
+    const predictedSelector = '#conteudo > table > tbody > tr:nth-child(7) > td:nth-child(1) > div';
+    let predictedContent: string | null = null;
+
+    const predictedElement = $(predictedSelector);
+    if (predictedElement.length > 0) {
+        // Check if the element contains the specific text indicating it's the "previstos" section
+        const predictedTitle = predictedElement.find('strong').text().trim();
+        if (predictedTitle.toLowerCase().includes('previstos')) {
+            predictedContent = predictedElement.html()?.trim() || predictedElement.text().trim(); // Get full HTML or just text
+        } else {
+             console.warn(`Element at selector ${predictedSelector} does not seem to contain 'previstos'. Found title: "${predictedTitle}"`);
+        }
+    } else {
+        console.warn(`Predicted content element not found with selector: ${predictedSelector}`);
+    }
+
+
+    return { headers, rows, predicted: predictedContent };
 
   } catch (error) {
     console.error(`Error scraping ${url}:`, error);

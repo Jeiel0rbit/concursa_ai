@@ -80,6 +80,22 @@ const Home: NextPage = () => {
         </div>
       )}
 
+      {/* Display Predicted Concursos */}
+      {concursos?.predicted && !loading && (
+        <Card className="mt-8 w-full max-w-4xl shadow-lg">
+          <CardHeader>
+            <CardTitle>Concursos Previstos</CardTitle>
+            <CardDescription>Informações sobre concursos previstos para este estado.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* Render HTML content safely or just text */}
+            <div dangerouslySetInnerHTML={{ __html: concursos.predicted }} />
+            {/* Or if only text is needed: <p>{concursos.predicted}</p> */}
+          </CardContent>
+        </Card>
+      )}
+
+
       <footer className="w-full max-w-4xl mt-10 pt-5 border-t text-center text-muted-foreground">
         <p>Desenvolvido com Next.js e ShadCN UI</p>
       </footer>

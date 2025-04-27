@@ -10,4 +10,5 @@ export interface ConcursoRow {
 export interface ConcursoData {
   headers: string[];
   rows: ConcursoRow[];
+  predicted: string | null; // Added field for predicted concursos
 }

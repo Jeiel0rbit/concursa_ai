@@ -51,7 +51,7 @@ const StateSelector: React.FC<StateSelectorProps> = ({ selectedState, onStateCha
   return (
     <Select onValueChange={onStateChange} value={selectedState}>
       <SelectTrigger className={cn(
-        "w-full sm:w-[280px] h-12 text-base rounded-lg border-primary focus:ring-primary focus:border-primary transition duration-200", // Base styles
+        "w-full max-w-xs h-12 text-base rounded-lg border-primary focus:ring-primary focus:border-primary transition duration-200", // Use max-w-xs
         "bg-card text-foreground" // Colors from theme
       )}>
         <MapPin className="mr-2 h-5 w-5 text-primary" /> {/* Icon with theme color */}

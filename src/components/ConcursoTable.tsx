@@ -35,44 +35,72 @@ const ConcursoTable: React.FC<ConcursoTableProps> = ({ title, headers, rows }) =
         {/* <CardDescription className="text-muted-foreground">Detalhes dos concursos encontrados.</CardDescription> */}
       </CardHeader>
       <CardContent className="p-0">
-          <Table>
-             {hasHeaders ? (
-                <TableHeader className="bg-gold-pale/50">
-                  <TableRow>
-                    {headers.map((header, index) => (
-                      <TableHead key={index} className={`p-4 font-bold text-gold-dark ${index === 0 ? "w-[40%] sm:w-[50%] md:w-[60%]" : "text-left"}`}>{header}</TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-             ) : null}
-            <TableBody>
-              {rows.map((row, rowIndex) => (
-                <TableRow key={rowIndex} className="hover:bg-gold-bg border-b border-gold-pale last:border-b-0 transition-colors duration-200">
-                  {row.cells.map((cell, cellIndex) => (
-                    <TableCell key={cellIndex} className="p-4 align-top text-sm text-foreground"> {/* Consistent padding & align */}
-                      {cell.link ? (
-                        <Link
-                          href={cell.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-accent hover:text-primary hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded inline-flex items-center gap-1 group break-words"
+          {/* Added overflow-x-auto for smaller screens */}
+          <div className="overflow-x-auto">
+              <Table>
+                 {hasHeaders ? (
+                    <TableHeader className="bg-gold-pale/50">
+                      <TableRow>
+                        {/* Apply specific widths to header cells */}
+                        {headers.map((header, index) => (
+                          <TableHead
+                            key={index}
+                            className={`p-4 font-bold text-gold-dark whitespace-nowrap ${
+                              index === 0 ? "w-[40%] sm:w-[50%]" // First column (Órgão) takes more space
+                              : index === 1 ? "w-[15%] sm:w-[10%] text-center" // Second column (Vagas) smaller and centered
+                              : index === 2 ? "w-[25%] sm:w-[20%]" // Third column (Inscrições)
+                              : "w-auto" // Auto width for others
+                            }`}
+                           >
+                             {header}
+                           </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
+                 ) : null}
+                <TableBody>
+                  {rows.map((row, rowIndex) => (
+                    <TableRow key={rowIndex} className="hover:bg-gold-bg border-b border-gold-pale last:border-b-0 transition-colors duration-200">
+                      {row.cells.map((cell, cellIndex) => (
+                        <TableCell
+                            key={cellIndex}
+                            className={`p-4 align-top text-sm text-foreground ${
+                                cellIndex === 1 ? "text-center" // Center text in Vagas column
+                                : ""
+                            }`}
                         >
-                          {cell.text || "Abrir Link"} {/* Provide fallback text */}
-                          <ExternalLink className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
-                        </Link>
-                      ) : (
-                        // Use dangerouslySetInnerHTML for cells containing 'previsto' div or other specific HTML
-                        // Ensure the HTML is sanitized if it comes from untrusted sources.
-                        // Here we assume the 'previsto' div is safe.
-                        <span className="break-words" dangerouslySetInnerHTML={{ __html: cell.text.replace('<div class="label-previsto">previsto</div>', '<span class="text-xs font-semibold bg-secondary text-secondary-foreground py-0.5 px-1.5 rounded-md ml-1 align-middle">PREVISTO</span>') }}></span>
+                          {cell.link ? (
+                            <Link
+                              href={cell.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-accent hover:text-primary hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded inline-flex items-center gap-1 group break-words"
+                            >
+                              {cell.text || "Abrir Link"} {/* Provide fallback text */}
+                              <ExternalLink className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
+                            </Link>
+                          ) : (
+                            // Use dangerouslySetInnerHTML for cells containing 'previsto' div or other specific HTML
+                            // Ensure the HTML is sanitized if it comes from untrusted sources.
+                            // Here we assume the 'previsto' div is safe.
+                            <span
+                               className="break-words"
+                               dangerouslySetInnerHTML={{
+                                   __html: cell.text.replace(
+                                       /<div class="label-previsto">previsto<\/div>/gi, // Case-insensitive replacement
+                                       '<span class="inline-block text-xs font-semibold bg-secondary text-secondary-foreground py-0.5 px-1.5 rounded-md ml-1 align-middle whitespace-nowrap">PREVISTO</span>'
+                                   )
+                               }}
+                           ></span>
 
-                      )}
-                    </TableCell>
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
                   ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                </TableBody>
+              </Table>
+          </div>
       </CardContent>
     </Card>
   );

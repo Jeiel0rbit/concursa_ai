@@ -81,17 +81,17 @@ const Home: NextPage = () => {
           </Button>
       </header>
 
-      <Card className="w-full max-w-5xl shadow-lg bg-card rounded-xl border-primary border-2">
+      <Card className="w-full max-w-lg shadow-lg bg-card rounded-xl border-primary border-2 mb-8"> {/* Reduced max-width */}
         <CardHeader>
-          <CardTitle className="text-2xl text-primary">Selecione o Estado</CardTitle>
-          <CardDescription className="text-muted-foreground">Escolha um estado para visualizar os concursos.</CardDescription>
+          <CardTitle className="text-2xl text-primary text-center">Selecione o Estado</CardTitle> {/* Centered title */}
+          {/* <CardDescription className="text-muted-foreground text-center">Escolha um estado para visualizar os concursos.</CardDescription> */}
         </CardHeader>
-        <CardContent className="flex flex-col sm:flex-row items-center gap-4 p-6">
+        <CardContent className="flex flex-col items-center gap-4 p-6"> {/* Use flex-col and items-center */}
           <StateSelector selectedState={selectedState} onStateChange={handleStateChange} />
           <Button
             onClick={() => handleSearch()} // Pass explicitly to ensure current state is used
             disabled={loading || !selectedState}
-            className="w-full sm:w-auto bg-primary hover:bg-gold-dark text-primary-foreground rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-105"
+            className="w-full max-w-xs bg-primary hover:bg-gold-dark text-primary-foreground rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-105" // Limit button width
             size="lg"
           >
             {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}

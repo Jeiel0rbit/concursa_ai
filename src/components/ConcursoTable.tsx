@@ -36,15 +36,15 @@ const ConcursoTable: React.FC<ConcursoTableProps> = ({ title, headers, rows }) =
       </CardHeader>
       <CardContent className="p-0">
           <Table>
-             {hasHeaders && (
+             {hasHeaders ? (
                 <TableHeader className="bg-gold-pale/50"> {/* Use a pale gold for header bg */}
-                <TableRow>
+                  <TableRow>
                     {headers.map((header, index) => (
-                    <TableHead key={index} className={`p-4 font-bold text-gold-dark ${index === 0 ? "w-[40%] sm:w-[50%] md:w-[60%]" : "text-left"}`}>{header}</TableHead>
+                      <TableHead key={index} className={`p-4 font-bold text-gold-dark ${index === 0 ? "w-[40%] sm:w-[50%] md:w-[60%]" : "text-left"}`}>{header}</TableHead>
                     ))}
-                </TableRow>
+                  </TableRow>
                 </TableHeader>
-             )}
+             ) : null}{/* Ensure no whitespace when hasHeaders is false */}
             <TableBody>
               {rows.map((row, rowIndex) => (
                 <TableRow key={rowIndex} className="hover:bg-gold-bg border-b border-gold-pale last:border-b-0 transition-colors duration-200">

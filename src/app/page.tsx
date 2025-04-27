@@ -29,22 +29,30 @@ const Home: NextPage = () => {
     }
     setLoading(true);
     setError(null);
-    setConcursos(null);
+    setConcursos(null); // Clear previous results before fetching new ones
     try {
       const data = await scrapeConcursos(selectedState);
       setConcursos(data);
-      if (!data.predicted && data.rows.length === 0) {
-        console.log("No regular or predicted contests found.");
-        // Optionally set a specific message if needed, though the table component handles empty rows.
+      if (data.rows.length === 0 && !data.predicted) {
+        // Optional: Set a specific message if both regular and predicted are empty
+        console.log("No regular or predicted contests found after scraping.");
+        // The ConcursoTable component will handle the empty 'rows' case.
+        // The Predicted section below handles the empty 'predicted' case.
       }
     } catch (err) {
       console.error('Scraping failed:', err);
        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
       setError(`Falha ao buscar os dados: ${errorMessage}`);
+      setConcursos({ headers: [], rows: [], predicted: null }); // Set to empty state on error
     } finally {
       setLoading(false);
     }
   };
+
+  // Determine if there are any results (either regular rows or predicted content)
+  const hasResults = concursos && (concursos.rows.length > 0 || !!concursos.predicted);
+  const showNoResultsMessage = !loading && !error && concursos && !hasResults;
+
 
   return (
     <div className="min-h-screen bg-secondary flex flex-col items-center py-10 px-4">
@@ -84,27 +92,42 @@ const Home: NextPage = () => {
         </div>
       )}
 
-      {/* Display Regular Concursos Table */}
-      {concursos && !loading && (
-        <div className="mt-8 w-full max-w-4xl">
-           <ConcursoTable data={concursos} />
-        </div>
-      )}
+      {/* Display Results Area - Only show if not loading and no error */}
+      {!loading && !error && concursos && (
+        <>
+          {/* Display Regular Concursos Table */}
+          {/* ConcursoTable handles the case where data.rows is empty */}
+          <div className="mt-8 w-full max-w-4xl">
+            <ConcursoTable data={concursos} />
+          </div>
 
-      {/* Display Predicted Concursos if available */}
-      {concursos?.predicted && !loading && (
-        <Card className="mt-8 w-full max-w-4xl shadow-lg bg-card">
-          <CardHeader>
-            <CardTitle>Concursos Previstos</CardTitle>
-            <CardDescription>Informações sobre concursos previstos para este estado.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* Render the scraped HTML content using dangerouslySetInnerHTML.
-                Be cautious with this if the source website is not trusted.
-                For concursosnobrasil, it should be relatively safe as it renders the contest details. */}
-            <div dangerouslySetInnerHTML={{ __html: concursos.predicted }} />
-          </CardContent>
-        </Card>
+          {/* Display Predicted Concursos if available */}
+          {concursos.predicted && (
+            <Card className="mt-8 w-full max-w-4xl shadow-lg bg-card">
+              <CardHeader>
+                <CardTitle>Concursos Previstos</CardTitle>
+                <CardDescription>Informações sobre concursos previstos para este estado.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {/* Render the scraped HTML content using dangerouslySetInnerHTML. */}
+                <div className="prose prose-sm max-w-none dark:prose-invert" // Basic prose styling
+                     dangerouslySetInnerHTML={{ __html: concursos.predicted }} />
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Display "No Results" message if applicable */}
+          {showNoResultsMessage && (
+             <Card className="mt-8 w-full max-w-4xl shadow-lg bg-card">
+                <CardHeader>
+                    <CardTitle>Nenhum Concurso Encontrado</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-muted-foreground">Não foram encontrados concursos (abertos, em andamento ou previstos) para o estado selecionado no momento.</p>
+                </CardContent>
+            </Card>
+          )}
+        </>
       )}
 
 

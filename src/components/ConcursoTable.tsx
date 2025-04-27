@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ConcursoData } from '@/types/concursos'; // Ensure this path is correct
 import Link from 'next/link';
 
@@ -18,34 +18,20 @@ interface ConcursoTableProps {
 }
 
 const ConcursoTable: React.FC<ConcursoTableProps> = ({ data }) => {
-  // Check specifically if there are rows to display
+  // Only render this table if there are regular rows to display
   if (!data || !data.rows || data.rows.length === 0) {
-    // If predicted contests exist, don't show this message, otherwise inform the user.
-    if (data?.predicted) {
-        return null; // Render nothing for the main table if only predicted exists
-    }
-    // Only show this card if there are no rows AND no predicted content
-    return (
-        <Card className="mt-8 shadow-lg bg-card">
-        <CardHeader>
-            <CardTitle>Nenhum Concurso Encontrado</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <p className="text-muted-foreground">Não foram encontrados concursos (ativos ou previstos) para o estado selecionado no momento.</p>
-        </CardContent>
-        </Card>
-    );
+    // Don't show a message here if rows are empty, the main page handles the overall "no results" state.
+    return null;
   }
 
    // Check if headers are present. If not, don't render the table header.
   const hasHeaders = data.headers && data.headers.length > 0 && data.headers.some(h => h !== '');
 
   return (
-    <Card className="mt-8 shadow-lg overflow-hidden bg-card">
+    <Card className="shadow-lg overflow-hidden bg-card"> {/* Removed mt-8, handled by parent */}
        <CardHeader>
         <CardTitle>Concursos Abertos e em Andamento</CardTitle>
-         {/* Optional: Add a description if needed */}
-        {/* <CardDescription>Lista de concursos atualmente disponíveis.</CardDescription> */}
+         {/* Removed description, kept it simple */}
       </CardHeader>
       <CardContent className="p-0">
           <Table>
@@ -54,8 +40,8 @@ const ConcursoTable: React.FC<ConcursoTableProps> = ({ data }) => {
                 <TableHeader className="bg-muted">
                 <TableRow>
                     {data.headers.map((header, index) => (
-                    // Adjust width heuristic if needed, e.g., based on typical content
-                    <TableHead key={index} className={index === 0 ? "w-[50%] md:w-[60%]" : ""}>{header}</TableHead>
+                    // Basic width heuristic for the first column
+                    <TableHead key={index} className={index === 0 ? "w-[50%] md:w-[60%]" : "text-left"}>{header}</TableHead>
                     ))}
                 </TableRow>
                 </TableHeader>
@@ -64,13 +50,13 @@ const ConcursoTable: React.FC<ConcursoTableProps> = ({ data }) => {
               {data.rows.map((row, rowIndex) => (
                 <TableRow key={rowIndex} className="hover:bg-muted/50">
                   {row.cells.map((cell, cellIndex) => (
-                    <TableCell key={cellIndex} className="p-3 align-top"> {/* Adjust padding */}
+                    <TableCell key={cellIndex} className="p-3 align-top text-sm"> {/* Consistent padding & align */}
                       {cell.link ? (
-                        <Link href={cell.link} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded">
+                        <Link href={cell.link} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded break-words">
                           {cell.text || "Link"} {/* Provide fallback text for link */}
                         </Link>
                       ) : (
-                        <span className="text-foreground">{cell.text}</span> // Ensure default text color
+                        <span className="text-foreground break-words">{cell.text}</span> // Ensure default text color
                       )}
                     </TableCell>
                   ))}

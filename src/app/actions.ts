@@ -52,20 +52,25 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
     throw new Error("State abbreviation is required.");
   }
 
-  const url = `https://concursosnobrasil.com/concursos/${state.toLowerCase()}/`;
-  console.log(`Scraping URL: ${url}`);
+  // The target URL structure is usually /concursos/{state}/, but fallback to /concursos/previstos/{state}/ might be needed or vice-versa depending on the site structure.
+  // Let's try the main state page first.
+  const baseUrl = `https://concursosnobrasil.com/concursos/${state.toLowerCase()}/`;
+  console.log(`Scraping URL: ${baseUrl}`);
 
   try {
-    const html = await fetchHtml(url);
+    const html = await fetchHtml(baseUrl);
     const $ = cheerio.load(html);
 
-    // --- Scraping the Table ---
-    const tableSelector = '#conteudo > table'; // Target the table within the #conteudo div
+    // --- Scraping the Main Table (Open/In Progress) ---
+    // Use a more specific selector if possible, #conteudo might contain other tables.
+    // Let's assume the first table directly inside #conteudo is the target.
+    const tableSelector = '#conteudo > table:first-of-type';
     const table = $(tableSelector);
 
     if (table.length === 0) {
-       console.warn(`Table not found at ${url} with selector ${tableSelector}`);
-       return { headers: [], rows: [], predicted: null }; // Return empty data if table not found
+       console.warn(`Main contest table not found at ${baseUrl} with selector ${tableSelector}`);
+       // If the main table isn't found, maybe the structure changed, or there are only predicted ones.
+       // We still might find predicted ones below.
     }
 
     const headers: string[] = [];
@@ -77,80 +82,109 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
        }
     });
 
-     // If no headers found in thead, try tbody first tr td as headers
-     // This handles cases where the table lacks a <thead>
-     if (headers.length === 0) {
+     // Fallback: If no thead, try the first tbody row for headers
+     let firstRowIsHeader = false;
+     if (headers.length === 0 && table.find('tbody tr').length > 0) {
          table.find('tbody tr:first-child td').each((i, el) => {
              const text = $(el).text().trim();
-             if (text) {
+             // Basic heuristic: if a cell looks like a header (e.g., bold or specific text)
+             if (text && $(el).find('strong').length > 0 || ['Órgão', 'Vagas', 'Inscrições'].includes(text)) {
                  headers.push(text);
+             } else {
+                 // If one cell doesn't look like a header, assume the row is data
+                 headers.length = 0; // Reset headers
+                 return false; // Break loop
              }
          });
-         // console.log('Using first tbody row for headers:', headers);
-     } else {
+         if (headers.length > 0) {
+            firstRowIsHeader = true;
+            // console.log('Using first tbody row for headers:', headers);
+         }
+     } else if (headers.length > 0) {
        // console.log('Using thead for headers:', headers);
      }
 
      if (headers.length === 0) {
-        console.warn('Could not determine table headers.');
-        // Decide if you want to proceed without headers or return error/empty
+        console.warn(`Could not determine table headers for ${baseUrl}. Proceeding without strict header matching.`);
      }
 
     const rows: ConcursoRow[] = [];
     let predictedContent: string | null = null;
 
-    // Iterate through all rows in tbody
+    // Iterate through all rows in the main table's tbody
     table.find('tbody tr').each((rowIndex, rowEl) => {
       const row = $(rowEl);
+
+      // Skip the first row if it was identified as the header row
+      if (firstRowIsHeader && rowIndex === 0) {
+        // console.log('Skipping first tbody row as it was used for headers.');
+        return; // Continue to the next iteration
+      }
+
       const firstCell = row.find('td:first-child'); // Get the first cell
 
-      // Check if the first cell contains the 'label-previsto' div indicating a predicted contest row
+      // ** Check if this row is specifically marked as 'previsto' **
       const labelPrevisto = firstCell.find('div.label-previsto');
       if (labelPrevisto.length > 0 && labelPrevisto.text().trim().toLowerCase() === 'previsto') {
-          // If it's the 'previsto' row, extract the HTML content of the first cell's *content* (excluding the 'previsto' label itself)
+          // If it's the 'previsto' row within the main table, extract the HTML content of the first cell
           // Clone the cell, remove the label div, then get the html
           const cellContentClone = firstCell.clone();
           cellContentClone.find('div.label-previsto').remove(); // Remove the label
           predictedContent = cellContentClone.html()?.trim() || null; // Get the remaining HTML
-          // console.log("Found and extracted predicted content HTML:", predictedContent);
-          return; // Skip adding this row to the main concours list
+          // console.log("Found and extracted predicted content HTML from main table:", predictedContent);
+          return; // Skip adding this row to the main 'open' concours list
       }
 
-      // Skip the first row if it was used for headers (when no thead exists)
-      if (headers.length > 0 && table.find('thead').length === 0 && rowIndex === 0) {
-            // console.log('Skipping first tbody row as it was used for headers.');
-            return;
-      }
-
+      // --- Process as a regular (open/in progress) contest row ---
       const cells: ConcursoCell[] = [];
       row.find('td').each((cellIndex, cellEl) => {
-          // Only add cell if its index corresponds to a found header OR if no headers were found (attempt to grab all)
+          // If we have headers, only add cells matching the header count.
+          // If no headers, add all cells found in the row.
           if (headers.length === 0 || cellIndex < headers.length) {
                cells.push(extractCellData($(cellEl)));
           }
       });
 
-       // Add row if it has cells and isn't entirely empty text
-       // Use headers.length if available for stricter check, otherwise check if cells were found
-       const expectedCellCount = headers.length > 0 ? headers.length : 0;
-       if (cells.length > 0 && // Ensure there are cells
-           (expectedCellCount === 0 || cells.length === expectedCellCount) && // Match header count if headers exist
-            cells.some(cell => cell.text !== '')) // Ensure row is not completely empty
-        {
+       // Add row if it has cells AND (matches header count OR no headers found) AND isn't entirely empty
+       const expectedCellCount = headers.length > 0 ? headers.length : 1; // Expect at least 1 cell if no headers
+       if (cells.length > 0 &&
+           (headers.length === 0 || cells.length === expectedCellCount) &&
+           cells.some(cell => cell.text !== '')
+        ) {
          rows.push({ cells });
+       } else if (cells.length > 0 && (headers.length === 0 || cells.length === expectedCellCount)) {
+           // console.log(`Skipping row ${rowIndex} because it seems empty.`);
+       } else if (cells.length !== expectedCellCount && headers.length > 0) {
+            // console.log(`Skipping row ${rowIndex} due to cell count mismatch (expected ${expectedCellCount}, got ${cells.length}). Cells:`, cells.map(c => c.text));
        }
     });
 
-    // console.log(`Found ${rows.length} regular contest rows.`);
+    // console.log(`Found ${rows.length} regular contest rows in main table.`);
+
+    // If we didn't find the 'previsto' label in the main table,
+    // check common locations like a dedicated section or a differently structured table.
+    // This part might need adjustment based on the actual site structure for predicted contests.
     if (!predictedContent) {
-        console.warn(`Predicted content element containing 'div.label-previsto' not found in any row's first cell.`);
+        // Example: Look for a specific heading and the content following it
+        const predictedHeading = $('#conteudo h2:contains("Concursos Previstos"), #conteudo h3:contains("Concursos Previstos")');
+        if (predictedHeading.length > 0) {
+            // Try to get the next sibling element's HTML (might be a div, p, or table)
+            predictedContent = predictedHeading.next().html()?.trim() || null;
+             if (predictedContent) {
+               // console.log("Found predicted content following a heading:", predictedContent);
+             } else {
+               console.warn(`Found 'Concursos Previstos' heading but couldn't extract subsequent content.`);
+             }
+        } else {
+           // console.warn(`'div.label-previsto' not found in any main table row's first cell, and no 'Concursos Previstos' heading found.`);
+        }
     }
 
 
     return { headers, rows, predicted: predictedContent };
 
   } catch (error) {
-    console.error(`Error scraping ${url}:`, error);
+    console.error(`Error scraping ${baseUrl}:`, error);
     // Provide more context in the error message
     if (error instanceof Error) {
         throw new Error(`Failed to scrape concurso data for state ${state}. Reason: ${error.message}`);

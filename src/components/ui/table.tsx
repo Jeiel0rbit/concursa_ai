@@ -25,7 +25,7 @@ const TableHeader = React.forwardRef<
     ref={ref}
     className={cn("[&_tr]:border-b", className)}
     {...props}
-  >{children}</thead>
+  >{children}</thead> // Ensure no whitespace around children
 ));
 TableHeader.displayName = "TableHeader"
 
@@ -38,7 +38,7 @@ const TableBody = React.forwardRef<
     ref={ref}
     className={cn("[&_tr:last-child]:border-0", className)}
     {...props}
-  >{children}</tbody>
+  >{children}</tbody> // Ensure no whitespace around children
 ));
 TableBody.displayName = "TableBody"
 
@@ -54,7 +54,7 @@ const TableFooter = React.forwardRef<
       className
     )}
     {...props}
-  >{children}</tfoot>
+  >{children}</tfoot> // Ensure no whitespace around children
 ));
 TableFooter.displayName = "TableFooter"
 
@@ -70,7 +70,7 @@ const TableRow = React.forwardRef<
         className
       )}
       {...props}
-    >{children}</tr>
+    >{children}</tr> // Ensure no whitespace around children
 ));
 TableRow.displayName = "TableRow"
 
@@ -86,7 +86,7 @@ const TableHead = React.forwardRef<
       className
     )}
     {...props}
-  >{children}</th>
+  >{children}</th> // Ensure no whitespace around children
 ));
 TableHead.displayName = "TableHead"
 
@@ -99,7 +99,7 @@ const TableCell = React.forwardRef<
     ref={ref}
     className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
     {...props}
-  >{children}</td>
+  >{children}</td> // Ensure no whitespace around children
 ));
 TableCell.displayName = "TableCell"
 
@@ -112,7 +112,7 @@ const TableCaption = React.forwardRef<
     ref={ref}
     className={cn("mt-4 text-sm text-muted-foreground", className)}
     {...props}
-  >{children}</caption>
+  >{children}</caption> // Ensure no whitespace around children
 ));
 TableCaption.displayName = "TableCaption"
 

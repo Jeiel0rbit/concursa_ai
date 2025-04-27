@@ -7,8 +7,9 @@ export interface ConcursoRow {
   cells: ConcursoCell[];
 }
 
+// Updated structure to hold separate arrays for open and predicted contests
 export interface ConcursoData {
   headers: string[];
-  rows: ConcursoRow[];
-  predicted: string | null; // Added field for predicted concursos
+  openRows: ConcursoRow[];
+  predictedRows: ConcursoRow[];
 }

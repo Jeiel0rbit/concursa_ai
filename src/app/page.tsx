@@ -33,29 +33,25 @@ const Home: NextPage = () => {
     try {
       const data = await scrapeConcursos(selectedState);
       setConcursos(data);
-       // Log whether predicted content was found
-       if (data.predicted) {
-         console.log("Predicted content found and passed to component:", data.predicted);
-       } else {
-         console.log("No predicted content found during scrape.");
-       }
+      console.log("Scraped data:", data); // Log the received data structure
     } catch (err) {
       console.error('Scraping failed:', err);
        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
       setError(`Falha ao buscar os dados: ${errorMessage}`);
-      setConcursos({ headers: [], rows: [], predicted: null }); // Set to empty state on error
+      // Set to empty state on error to avoid null issues later
+      setConcursos({ headers: [], openRows: [], predictedRows: [] });
     } finally {
       setLoading(false);
     }
   };
 
-  // Determine if there are any results (either regular rows or predicted content)
-  const hasResults = concursos && (concursos.rows.length > 0 || !!concursos.predicted);
+  // Determine if there are any results (either open or predicted rows)
+  const hasResults = concursos && (concursos.openRows.length > 0 || concursos.predictedRows.length > 0);
   // Show the "No Results" message only if:
   // - Not loading
   // - No error occurred
   // - `concursos` object exists (meaning search was attempted)
-  // - `hasResults` is false (neither rows nor predicted content found)
+  // - `hasResults` is false (neither open nor predicted rows found)
   const showNoResultsMessage = !loading && !error && concursos !== null && !hasResults;
 
 
@@ -99,33 +95,24 @@ const Home: NextPage = () => {
 
       {/* Display Results Area - Only show if not loading and no error */}
       {!loading && !error && concursos && (
-        <>
-          {/* Display Regular Concursos Table if rows exist */}
-          {concursos.rows.length > 0 && (
-             <div className="mt-8 w-full max-w-4xl">
-                <ConcursoTable data={concursos} />
-             </div>
-          )}
+        <div className="mt-8 w-full max-w-4xl space-y-8">
+          {/* Display Open Concursos Table if rows exist */}
+          <ConcursoTable
+            title="Concursos Abertos e em Andamento"
+            headers={concursos.headers}
+            rows={concursos.openRows}
+          />
 
-          {/* Display Predicted Concursos if available */}
-          {concursos.predicted && (
-            <Card className="mt-8 w-full max-w-4xl shadow-lg bg-card">
-              <CardHeader>
-                <CardTitle>Concursos Previstos</CardTitle>
-                <CardDescription>Informações sobre concursos previstos para este estado.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {/* Render the scraped HTML content using dangerouslySetInnerHTML. */}
-                {/* Adding basic prose styling for better readability of unknown HTML structure */}
-                <div className="prose prose-sm max-w-none dark:prose-invert text-foreground"
-                     dangerouslySetInnerHTML={{ __html: concursos.predicted }} />
-              </CardContent>
-            </Card>
-          )}
+          {/* Display Predicted Concursos Table if rows exist */}
+          <ConcursoTable
+            title="Concursos Previstos"
+            headers={concursos.headers}
+            rows={concursos.predictedRows}
+          />
 
-          {/* Display "No Results" message if applicable (neither rows nor predicted found) */}
+          {/* Display "No Results" message if applicable */}
           {showNoResultsMessage && (
-             <Card className="mt-8 w-full max-w-4xl shadow-lg bg-card">
+             <Card className="shadow-lg bg-card">
                 <CardHeader>
                     <CardTitle>Nenhum Concurso Encontrado</CardTitle>
                 </CardHeader>
@@ -134,7 +121,7 @@ const Home: NextPage = () => {
                 </CardContent>
             </Card>
           )}
-        </>
+        </div>
       )}
 
 

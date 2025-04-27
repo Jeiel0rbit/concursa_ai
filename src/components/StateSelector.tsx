@@ -51,18 +51,18 @@ const StateSelector: React.FC<StateSelectorProps> = ({ selectedState, onStateCha
   return (
     <Select onValueChange={onStateChange} value={selectedState}>
       <SelectTrigger className={cn(
-        "w-full max-w-xs h-12 text-base rounded-lg border-primary focus:ring-primary focus:border-primary transition duration-200", // Use max-w-xs
-        "bg-card text-foreground" // Colors from theme
+        "w-full max-w-xs h-12 text-base rounded-lg border-border focus:ring-ring focus:border-primary transition duration-200", // Use theme border, primary border on focus
+        "bg-input text-foreground" // Use input background, theme foreground
       )}>
-        <MapPin className="mr-2 h-5 w-5 text-primary" /> {/* Icon with theme color */}
+        <MapPin className="mr-2 h-5 w-5 text-primary" /> {/* Icon with primary color */}
         <SelectValue placeholder="Selecione um estado..." />
       </SelectTrigger>
-      <SelectContent className="bg-card border-secondary rounded-lg shadow-lg"> {/* Styled dropdown */}
+      <SelectContent className="bg-popover border-border rounded-lg shadow-lg"> {/* Styled dropdown using popover bg and theme border */}
         {states.map((state) => (
           <SelectItem
             key={state.value}
             value={state.value}
-            className="cursor-pointer hover:bg-secondary focus:bg-secondary rounded-md" // Hover/focus styles
+            className="cursor-pointer hover:bg-accent/10 focus:bg-accent/20 rounded-md text-popover-foreground" // Use accent for hover/focus
           >
             {state.label}
           </SelectItem>

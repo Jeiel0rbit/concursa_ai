@@ -73,7 +73,7 @@ const Home: NextPage = () => {
          <Button
             variant="ghost"
             size="icon"
-            className="absolute top-0 right-0 mt-2 mr-2 text-accent hover:text-accent-foreground"
+            className="absolute top-0 right-0 mt-2 mr-2 text-accent hover:text-accent-foreground/80" // Use accent color
             onClick={() => setIsInfoDialogOpen(true)}
             aria-label="Informações do Projeto"
           >
@@ -81,7 +81,7 @@ const Home: NextPage = () => {
           </Button>
       </header>
 
-      <Card className="w-full max-w-lg shadow-lg bg-card rounded-xl border-primary border-2 mb-8"> {/* Reduced max-width */}
+      <Card className="w-full max-w-lg shadow-lg bg-card rounded-xl border-border mb-8"> {/* Reduced max-width, use theme border */}
         <CardHeader>
           <CardTitle className="text-2xl text-primary text-center">Selecione o Estado</CardTitle> {/* Centered title */}
           {/* <CardDescription className="text-muted-foreground text-center">Escolha um estado para visualizar os concursos.</CardDescription> */}
@@ -91,7 +91,8 @@ const Home: NextPage = () => {
           <Button
             onClick={() => handleSearch()} // Pass explicitly to ensure current state is used
             disabled={loading || !selectedState}
-            className="w-full max-w-xs bg-primary hover:bg-gold-dark text-primary-foreground rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-105" // Limit button width
+            // Use primary background for button, remove hover scale
+            className="w-full max-w-xs bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg shadow transition duration-300 ease-in-out"
             size="lg"
           >
             {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
@@ -113,7 +114,7 @@ const Home: NextPage = () => {
 
       {loading && (
         <div className="mt-8 w-full max-w-5xl flex justify-center items-center h-64">
-          <Loader2 className="h-16 w-16 animate-spin text-primary" />
+          <Loader2 className="h-16 w-16 animate-spin text-primary" /> {/* Use primary color for loader */}
         </div>
       )}
 
@@ -130,7 +131,7 @@ const Home: NextPage = () => {
             rows={concursos.predictedRows}
           />
           {showNoResultsMessage && (
-             <Card className="shadow-lg bg-card rounded-xl border border-secondary">
+             <Card className="shadow-lg bg-card rounded-xl border border-border"> {/* Use theme border */}
                 <CardHeader>
                     <CardTitle className="text-primary">Nenhum Concurso Encontrado</CardTitle>
                 </CardHeader>
@@ -146,7 +147,7 @@ const Home: NextPage = () => {
        <InfoDialog open={isInfoDialogOpen} onOpenChange={setIsInfoDialogOpen} />
 
 
-      <footer className="w-full max-w-5xl mt-12 pt-6 border-t border-gold-pale text-center text-muted-foreground">
+      <footer className="w-full max-w-5xl mt-12 pt-6 border-t border-border text-center text-muted-foreground"> {/* Use theme border */}
         <p>Desenvolvido com Next.js, ShadCN UI e <span className="text-primary font-semibold">Paixão</span>.</p>
       </footer>
     </div>

@@ -20,9 +20,9 @@ interface InfoDialogProps {
 const InfoDialog: React.FC<InfoDialogProps> = ({ open, onOpenChange }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px] bg-card border-primary rounded-lg shadow-xl">
+      <DialogContent className="sm:max-w-[480px] bg-card border-border rounded-lg shadow-xl"> {/* Use card bg, theme border */}
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl text-primary">
+          <DialogTitle className="flex items-center gap-2 text-xl text-primary"> {/* Use primary color for title */}
             <Info className="h-6 w-6" />
             Sobre o ConcursoScraper
           </DialogTitle>
@@ -32,7 +32,7 @@ const InfoDialog: React.FC<InfoDialogProps> = ({ open, onOpenChange }) => {
         </DialogHeader>
         <div className="grid gap-4 py-4 text-foreground">
           <div className="flex items-start gap-3">
-            <Code className="h-5 w-5 mt-1 text-primary flex-shrink-0" />
+            <Code className="h-5 w-5 mt-1 text-primary flex-shrink-0" /> {/* Use primary color for icon */}
             <div>
               <h4 className="font-semibold">Propósito</h4>
               <p className="text-sm text-muted-foreground">
@@ -41,12 +41,12 @@ const InfoDialog: React.FC<InfoDialogProps> = ({ open, onOpenChange }) => {
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <Database className="h-5 w-5 mt-1 text-primary flex-shrink-0" />
+            <Database className="h-5 w-5 mt-1 text-primary flex-shrink-0" /> {/* Use primary color for icon */}
             <div>
               <h4 className="font-semibold">Fonte de Dados</h4>
               <p className="text-sm text-muted-foreground">
                 Os dados são obtidos através de web scraping do site{' '}
-                <a href="https://concursosnobrasil.com/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+                <a href="https://concursosnobrasil.com/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline"> {/* Use accent color for link */}
                   concursosnobrasil.com
                 </a>.
                 A precisão e disponibilidade das informações dependem da fonte original.
@@ -54,7 +54,7 @@ const InfoDialog: React.FC<InfoDialogProps> = ({ open, onOpenChange }) => {
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <Palette className="h-5 w-5 mt-1 text-primary flex-shrink-0" />
+            <Palette className="h-5 w-5 mt-1 text-primary flex-shrink-0" /> {/* Use primary color for icon */}
             <div>
               <h4 className="font-semibold">Tecnologias</h4>
               <p className="text-sm text-muted-foreground">
@@ -69,7 +69,7 @@ const InfoDialog: React.FC<InfoDialogProps> = ({ open, onOpenChange }) => {
         <DialogFooter>
           <Button
             onClick={() => onOpenChange(false)}
-            className="bg-primary hover:bg-gold-dark text-primary-foreground"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground" // Use primary background for button
           >
             Fechar
           </Button>

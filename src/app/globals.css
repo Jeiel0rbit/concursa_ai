@@ -8,113 +8,117 @@ body {
 
 @layer base {
   :root {
-    /* Gold Palette Variables */
-    --gold-primary: 43 74% 49%;    /* #D4AF37 - Mapped from HSL for consistency */
-    --gold-light: 51 100% 50%;     /* #FFD700 - Mapped from HSL */
-    --gold-dark: 43 74% 36%;      /* #B8860B - Mapped from HSL */
-    --gold-pale: 56 44% 80%;       /* #EEE8AA - Mapped from HSL */
-    --gold-deep: 35 25% 44%;       /* #8B7355 - Mapped from HSL */
-    --gold-bg: 39 100% 97%;       /* #FFFAF0 - Mapped from HSL */
+    /* New Blue/Teal Palette Variables */
+    --blue-primary: 224 65% 33%;    /* Dark Blue ~ blue-900 */
+    --blue-secondary: 217 91% 83%;  /* Light Blue ~ blue-200 */
+    --blue-accent: 180 100% 25%;   /* Teal Accent */
+    --neutral-bg: 210 40% 98%;    /* Very Light Gray Background */
+    --neutral-fg: 210 10% 23%;    /* Dark Gray Foreground */
+    --neutral-border: 210 40% 91%; /* Light Gray Border */
     --white: 0 0% 100%;
     --black: 0 0% 0%;
-    --neutral-dark: 240 5% 15%; /* Darker neutral for text */
-    --neutral-light: 240 5% 95%; /* Lighter neutral for cards */
 
-    /* ShadCN Theme Mapping using Gold Palette */
-    --background: var(--gold-bg);                 /* 39 100% 97% */
-    --foreground: var(--neutral-dark);            /* 240 5% 15% */
+    /* ShadCN Theme Mapping using Blue/Teal Palette */
+    --background: var(--neutral-bg);            /* 210 40% 98% */
+    --foreground: var(--neutral-fg);            /* 210 10% 23% */
 
-    --card: var(--white);                        /* 0 0% 100% */
-    --card-foreground: var(--neutral-dark);       /* 240 5% 15% */
+    --card: var(--white);                       /* 0 0% 100% */
+    --card-foreground: var(--neutral-fg);       /* 210 10% 23% */
 
-    --popover: var(--white);                     /* 0 0% 100% */
-    --popover-foreground: var(--neutral-dark);    /* 240 5% 15% */
+    --popover: var(--white);                    /* 0 0% 100% */
+    --popover-foreground: var(--neutral-fg);    /* 210 10% 23% */
 
-    --primary: var(--gold-primary);               /* 43 74% 49% */
-    --primary-foreground: var(--black);          /* 0 0% 0% */
+    --primary: var(--blue-primary);             /* 224 65% 33% */
+    --primary-foreground: var(--white);         /* 0 0% 100% */
 
-    --secondary: var(--gold-pale);                /* 56 44% 80% */
-    --secondary-foreground: var(--gold-dark);     /* 43 74% 36% */
+    --secondary: var(--blue-secondary);         /* 217 91% 83% */
+    --secondary-foreground: var(--blue-primary);/* 224 65% 33% */
 
-    --muted: var(--gold-pale);                    /* 56 44% 80% */
-    --muted-foreground: var(--gold-deep);         /* 35 25% 44% */
+    --muted: var(--neutral-border);             /* 210 40% 91% */
+    --muted-foreground: hsl(210, 10%, 45%);     /* Slightly darker muted fg */
 
-    --accent: var(--gold-dark);                   /* 43 74% 36% */
-    --accent-foreground: var(--white);           /* 0 0% 100% */
+    --accent: var(--blue-accent);               /* 180 100% 25% */
+    --accent-foreground: var(--white);          /* 0 0% 100% */
 
-    --destructive: 0 84.2% 60.2%;                 /* Default Red */
-    --destructive-foreground: var(--white);      /* 0 0% 100% */
+    --destructive: 0 84.2% 60.2%;               /* Default Red */
+    --destructive-foreground: var(--white);     /* 0 0% 100% */
 
-    --border: var(--gold-pale);                   /* 56 44% 80% */
-    --input: var(--gold-pale);                    /* 56 44% 80% */
-    --ring: var(--gold-primary);                  /* 43 74% 49% */
+    --border: var(--neutral-border);            /* 210 40% 91% */
+    --input: var(--neutral-border);             /* 210 40% 91% */
+    --ring: var(--blue-accent);                 /* 180 100% 25% */
 
     --radius: 0.5rem;
 
-    /* Chart colors - Can be adjusted */
-    --chart-1: var(--gold-primary);
-    --chart-2: var(--gold-dark);
-    --chart-3: var(--gold-deep);
-    --chart-4: var(--gold-light);
-    --chart-5: var(--gold-pale);
+    /* Chart colors - Adjusted for blue theme */
+    --chart-1: var(--blue-primary);             /* Dark Blue */
+    --chart-2: var(--blue-accent);              /* Teal */
+    --chart-3: hsl(217, 91%, 60%);            /* Medium Blue ~ blue-500 */
+    --chart-4: var(--blue-secondary);           /* Light Blue */
+    --chart-5: hsl(210, 40%, 70%);            /* Neutral Gray */
 
-    /* Sidebar colors (example using gold theme) */
-    --sidebar-background: var(--gold-pale);
-    --sidebar-foreground: var(--gold-deep);
-    --sidebar-primary: var(--gold-primary);
-    --sidebar-primary-foreground: var(--black);
-    --sidebar-accent: var(--gold-bg);
-    --sidebar-accent-foreground: var(--gold-dark);
-    --sidebar-border: var(--gold-dark);
-    --sidebar-ring: var(--gold-primary);
+    /* Sidebar colors (example using blue theme) */
+    /* Keep sidebar consistent with main theme for now */
+    --sidebar-background: var(--background);
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--accent);
+    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
   }
 
   .dark {
-    /* Optional: Define a dark theme variant if needed */
-    --background: var(--neutral-dark);            /* 240 5% 15% */
-    --foreground: var(--gold-pale);               /* 56 44% 80% */
+    /* Dark Theme Variant using Blue/Teal Palette */
+    --neutral-bg-dark: 210 10% 13%;  /* Very Dark Gray Background */
+    --neutral-fg-dark: 210 40% 95%;  /* Light Gray Foreground */
+    --neutral-border-dark: 210 10% 25%; /* Dark Gray Border */
 
-    --card: var(--black);                        /* 0 0% 0% */
-    --card-foreground: var(--gold-pale);          /* 56 44% 80% */
+    --background: var(--neutral-bg-dark);       /* 210 10% 13% */
+    --foreground: var(--neutral-fg-dark);       /* 210 40% 95% */
 
-    --popover: var(--black);                     /* 0 0% 0% */
-    --popover-foreground: var(--gold-pale);       /* 56 44% 80% */
+    --card: var(--black);                       /* 0 0% 0% */
+    --card-foreground: var(--neutral-fg-dark);  /* 210 40% 95% */
 
-    --primary: var(--gold-light);                 /* 51 100% 50% */
-    --primary-foreground: var(--black);          /* 0 0% 0% */
+    --popover: var(--black);                    /* 0 0% 0% */
+    --popover-foreground: var(--neutral-fg-dark);/* 210 40% 95% */
 
-    --secondary: var(--gold-deep);                /* 35 25% 44% */
-    --secondary-foreground: var(--gold-pale);     /* 56 44% 80% */
+    --primary: hsl(217, 91%, 60%);            /* Medium Blue ~ blue-500 */
+    --primary-foreground: var(--white);         /* 0 0% 100% */
 
-    --muted: var(--gold-deep);                    /* 35 25% 44% */
-    --muted-foreground: var(--gold-pale);         /* 56 44% 80% */
+    --secondary: var(--neutral-border-dark);    /* 210 10% 25% */
+    --secondary-foreground: var(--neutral-fg-dark);/* 210 40% 95% */
 
-    --accent: var(--gold-primary);                /* 43 74% 49% */
-    --accent-foreground: var(--black);           /* 0 0% 0% */
+    --muted: var(--neutral-border-dark);        /* 210 10% 25% */
+    --muted-foreground: hsl(210, 10%, 65%);     /* Lighter muted fg */
 
-    --destructive: 0 62.8% 30.6%;                 /* Default Dark Red */
-    --destructive-foreground: var(--white);      /* 0 0% 100% */
+    --accent: var(--blue-accent);               /* 180 100% 25% */
+    --accent-foreground: var(--white);          /* 0 0% 100% */
 
-    --border: var(--gold-deep);                   /* 35 25% 44% */
-    --input: var(--gold-deep);                    /* 35 25% 44% */
-    --ring: var(--gold-light);                  /* 51 100% 50% */
+    --destructive: 0 62.8% 30.6%;               /* Default Dark Red */
+    --destructive-foreground: var(--white);     /* 0 0% 100% */
+
+    --border: var(--neutral-border-dark);       /* 210 10% 25% */
+    --input: var(--neutral-border-dark);        /* 210 10% 25% */
+    --ring: var(--blue-accent);                 /* 180 100% 25% */
 
     /* Dark Chart colors */
-    --chart-1: var(--gold-light);
-    --chart-2: var(--gold-primary);
-    --chart-3: var(--gold-pale);
-    --chart-4: var(--gold-dark);
-    --chart-5: var(--gold-deep);
+    --chart-1: hsl(217, 91%, 60%);            /* Medium Blue */
+    --chart-2: var(--blue-accent);              /* Teal */
+    --chart-3: var(--blue-primary);             /* Dark Blue */
+    --chart-4: var(--blue-secondary);           /* Light Blue */
+    --chart-5: hsl(210, 40%, 50%);            /* Neutral Gray */
 
     /* Dark Sidebar colors */
-    --sidebar-background: var(--black);
-    --sidebar-foreground: var(--gold-pale);
-    --sidebar-primary: var(--gold-light);
-    --sidebar-primary-foreground: var(--black);
-    --sidebar-accent: var(--gold-deep);
-    --sidebar-accent-foreground: var(--gold-pale);
-    --sidebar-border: var(--gold-deep);
-    --sidebar-ring: var(--gold-light);
+    /* Keep sidebar consistent with main theme for now */
+    --sidebar-background: var(--background);
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--accent);
+    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
   }
 }
 
@@ -123,6 +127,6 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground; /* Use main gold background */
+    @apply bg-background text-foreground; /* Use main theme background/foreground */
   }
 }

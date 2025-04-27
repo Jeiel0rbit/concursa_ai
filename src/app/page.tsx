@@ -88,9 +88,8 @@ const Home: NextPage = () => {
             <CardDescription>Informações sobre concursos previstos para este estado.</CardDescription>
           </CardHeader>
           <CardContent>
-            {/* Render HTML content safely or just text */}
+            {/* Render HTML content safely */}
             <div dangerouslySetInnerHTML={{ __html: concursos.predicted }} />
-            {/* Or if only text is needed: <p>{concursos.predicted}</p> */}
           </CardContent>
         </Card>
       )}

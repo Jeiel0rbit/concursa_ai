@@ -53,10 +53,7 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
     const $ = cheerio.load(html);
 
     // --- Scraping Navigation (as requested, though not used in output) ---
-    // const navXPath = '/html/body/div[3]/div[1]/nav'; // This XPath translates poorly to CSS selectors.
-    // Let's try a more robust selector for the main navigation if needed.
-    // Example: const navLinks = $('ul.main-nav > li > a').map((i, el) => $(el).attr('href')).get();
-    // console.log("Nav Links:", navLinks); // Log if needed for debugging
+    // Not implemented as it wasn't required for the final output
 
     // --- Scraping the Table ---
     const tableSelector = '#conteudo > table'; // Target the table within the #conteudo div
@@ -69,13 +66,12 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
 
     const headers: string[] = [];
     table.find('thead tr th').each((i, el) => {
-       // Heuristic to skip potential empty/spacer header cells
        const text = $(el).text().trim();
        if (text) {
          headers.push(text);
        }
     });
-     // If no headers found in thead, try tbody first tr td as headers (common alternative structure)
+     // If no headers found in thead, try tbody first tr td as headers
      if (headers.length === 0) {
          table.find('tbody tr:first-child td').each((i, el) => {
              const text = $(el).text().trim();
@@ -86,42 +82,55 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
      }
 
     const rows: ConcursoRow[] = [];
-    table.find('tbody tr').each((rowIndex, rowEl) => {
-        // Skip the first row if it was used for headers
-        if (headers.length > 0 && table.find('thead').length === 0 && rowIndex === 0) {
-            return;
-        }
-
-        const cells: ConcursoCell[] = [];
-        $(rowEl).find('td').each((cellIndex, cellEl) => {
-            // Only add cell if its index corresponds to a found header
-            if (cellIndex < headers.length) {
-                 cells.push(extractCellData($(cellEl)));
-            }
-        });
-
-         // Only add row if it has the expected number of cells based on headers
-         if (cells.length === headers.length && cells.some(cell => cell.text !== '')) {
-           rows.push({ cells });
-         }
-    });
-
-     // --- Scraping Predicted Content ---
-    // XPath: //*[@id="conteudo"]/table/tbody/tr[7]/td[1]/div
-    const predictedSelector = '#conteudo > table > tbody > tr:nth-child(7) > td:nth-child(1) > div';
     let predictedContent: string | null = null;
 
-    const predictedElement = $(predictedSelector);
-    if (predictedElement.length > 0) {
-        // Check if the element contains the specific text indicating it's the "previstos" section
-        const predictedTitle = predictedElement.find('strong').text().trim();
-        if (predictedTitle.toLowerCase().includes('previstos')) {
-            predictedContent = predictedElement.html()?.trim() || predictedElement.text().trim(); // Get full HTML or just text
-        } else {
-             console.warn(`Element at selector ${predictedSelector} does not seem to contain 'previstos'. Found title: "${predictedTitle}"`);
-        }
-    } else {
-        console.warn(`Predicted content element not found with selector: ${predictedSelector}`);
+    table.find('tbody tr').each((rowIndex, rowEl) => {
+      const row = $(rowEl);
+      const firstCell = row.find('td:first-child');
+
+      // Check if the first cell contains the 'label-previsto' div
+      const labelPrevisto = firstCell.find('div.label-previsto');
+      if (labelPrevisto.length > 0 && labelPrevisto.text().trim().toLowerCase() === 'previsto') {
+          // If it's the 'previsto' row, extract the HTML content of the first cell's parent div
+          // Adjust selector if the structure is different, e.g., just firstCell.html()
+          predictedContent = firstCell.find('div').first().html()?.trim() || firstCell.html()?.trim() || null;
+          // Skip adding this row to the main concours list
+          return;
+      }
+
+
+      // Skip the first row if it was used for headers (alternative structure)
+      if (headers.length > 0 && table.find('thead').length === 0 && rowIndex === 0) {
+            return;
+      }
+
+      const cells: ConcursoCell[] = [];
+      row.find('td').each((cellIndex, cellEl) => {
+          // Only add cell if its index corresponds to a found header
+          if (cellIndex < headers.length) {
+               cells.push(extractCellData($(cellEl)));
+          }
+      });
+
+       // Only add row if it has the expected number of cells based on headers
+       // and isn't empty
+       if (cells.length === headers.length && cells.some(cell => cell.text !== '')) {
+         rows.push({ cells });
+       }
+    });
+
+    // --- Find Predicted Content More Robustly ---
+    // This section might be redundant now with the check inside the row loop,
+    // but kept for potential fallback or different structures.
+    // We search for the div with the specific class within any table cell.
+    if (!predictedContent) { // Only run if not found during row iteration
+        const predictedElementContainer = $('td div.label-previsto:contains("previsto")').closest('td').find('div').first();
+         if (predictedElementContainer.length > 0) {
+             predictedContent = predictedElementContainer.html()?.trim() || null;
+             console.log("Found predicted content via secondary search.");
+         } else {
+            console.warn(`Predicted content element containing '.label-previsto' not found.`);
+         }
     }
 
 

@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR"> {/* Set language to Portuguese */}
+    <html lang="pt-BR">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-secondary`}>
         {children}
         <Toaster /> {/* Add Toaster component */}

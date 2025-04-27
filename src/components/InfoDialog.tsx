@@ -20,7 +20,7 @@ interface InfoDialogProps {
 const InfoDialog: React.FC<InfoDialogProps> = ({ open, onOpenChange }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px] bg-card border-border rounded-lg shadow-xl"> {/* Use card bg, theme border */}
+      <DialogContent className="w-[90vw] sm:max-w-lg bg-card border-border rounded-lg shadow-xl"> {/* Use card bg, theme border, make responsive */}
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl text-primary"> {/* Use primary color for title */}
             <Info className="h-6 w-6" />

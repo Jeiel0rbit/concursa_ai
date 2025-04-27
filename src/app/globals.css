@@ -8,17 +8,17 @@ body {
 
 @layer base {
   :root {
-    /* New Blue/Teal Palette Variables */
+    /* Blue Palette Variables */
     --blue-primary: 224 65% 33%;    /* Dark Blue ~ blue-900 */
     --blue-secondary: 217 91% 83%;  /* Light Blue ~ blue-200 */
-    --blue-accent: 180 100% 25%;   /* Teal Accent */
+    --blue-accent: var(--blue-primary); /* Use Primary Blue as Accent */
     --neutral-bg: 210 40% 98%;    /* Very Light Gray Background */
     --neutral-fg: 210 10% 23%;    /* Dark Gray Foreground */
     --neutral-border: 210 40% 91%; /* Light Gray Border */
     --white: 0 0% 100%;
     --black: 0 0% 0%;
 
-    /* ShadCN Theme Mapping using Blue/Teal Palette */
+    /* ShadCN Theme Mapping using Blue Palette */
     --background: var(--neutral-bg);            /* 210 40% 98% */
     --foreground: var(--neutral-fg);            /* 210 10% 23% */
 
@@ -37,7 +37,7 @@ body {
     --muted: var(--neutral-border);             /* 210 40% 91% */
     --muted-foreground: hsl(210, 10%, 45%);     /* Slightly darker muted fg */
 
-    --accent: var(--blue-accent);               /* 180 100% 25% */
+    --accent: var(--blue-accent);               /* 224 65% 33% */
     --accent-foreground: var(--white);          /* 0 0% 100% */
 
     --destructive: 0 84.2% 60.2%;               /* Default Red */
@@ -45,14 +45,14 @@ body {
 
     --border: var(--neutral-border);            /* 210 40% 91% */
     --input: var(--neutral-border);             /* 210 40% 91% */
-    --ring: var(--blue-accent);                 /* 180 100% 25% */
+    --ring: var(--blue-accent);                 /* 224 65% 33% */
 
     --radius: 0.5rem;
 
     /* Chart colors - Adjusted for blue theme */
     --chart-1: var(--blue-primary);             /* Dark Blue */
-    --chart-2: var(--blue-accent);              /* Teal */
-    --chart-3: hsl(217, 91%, 60%);            /* Medium Blue ~ blue-500 */
+    --chart-2: hsl(217, 91%, 60%);            /* Medium Blue ~ blue-500 */
+    --chart-3: hsl(217, 91%, 75%);            /* Lighter Blue */
     --chart-4: var(--blue-secondary);           /* Light Blue */
     --chart-5: hsl(210, 40%, 70%);            /* Neutral Gray */
 
@@ -69,7 +69,7 @@ body {
   }
 
   .dark {
-    /* Dark Theme Variant using Blue/Teal Palette */
+    /* Dark Theme Variant using Blue Palette */
     --neutral-bg-dark: 210 10% 13%;  /* Very Dark Gray Background */
     --neutral-fg-dark: 210 40% 95%;  /* Light Gray Foreground */
     --neutral-border-dark: 210 10% 25%; /* Dark Gray Border */
@@ -92,7 +92,7 @@ body {
     --muted: var(--neutral-border-dark);        /* 210 10% 25% */
     --muted-foreground: hsl(210, 10%, 65%);     /* Lighter muted fg */
 
-    --accent: var(--blue-accent);               /* 180 100% 25% */
+    --accent: var(--blue-accent);               /* 224 65% 33% (Same as light) */
     --accent-foreground: var(--white);          /* 0 0% 100% */
 
     --destructive: 0 62.8% 30.6%;               /* Default Dark Red */
@@ -100,11 +100,11 @@ body {
 
     --border: var(--neutral-border-dark);       /* 210 10% 25% */
     --input: var(--neutral-border-dark);        /* 210 10% 25% */
-    --ring: var(--blue-accent);                 /* 180 100% 25% */
+    --ring: var(--blue-accent);                 /* 224 65% 33% */
 
     /* Dark Chart colors */
     --chart-1: hsl(217, 91%, 60%);            /* Medium Blue */
-    --chart-2: var(--blue-accent);              /* Teal */
+    --chart-2: hsl(217, 91%, 75%);            /* Lighter Blue */
     --chart-3: var(--blue-primary);             /* Dark Blue */
     --chart-4: var(--blue-secondary);           /* Light Blue */
     --chart-5: hsl(210, 40%, 50%);            /* Neutral Gray */

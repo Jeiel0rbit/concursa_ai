@@ -33,7 +33,12 @@ const Home: NextPage = () => {
     try {
       const data = await scrapeConcursos(selectedState);
       setConcursos(data);
-      // Logging removed, main check below handles display logic
+       // Log whether predicted content was found
+       if (data.predicted) {
+         console.log("Predicted content found and passed to component:", data.predicted);
+       } else {
+         console.log("No predicted content found during scrape.");
+       }
     } catch (err) {
       console.error('Scraping failed:', err);
        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';

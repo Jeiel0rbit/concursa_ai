@@ -141,11 +141,13 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
               const cellContentClone = firstCell.clone();
               cellContentClone.find('div.label-previsto').remove(); // Remove the label
               predictedContent = cellContentClone.html()?.trim() || null; // Get the remaining HTML
-              // console.log("Found and extracted predicted content HTML from first cell of a 'previsto' marked row:", predictedContent);
+              console.log("Found and extracted predicted content HTML from first cell of a 'previsto' marked row:", predictedContent);
+          } else {
+              console.log(`Found another row marked 'previsto' at index ${rowIndex}, but already captured predicted content. Skipping.`);
           }
           // Skip adding this row to the main 'open' concours list, regardless of whether we extracted content
           // (in case multiple rows are marked, we only take the first one's content)
-          return;
+          return; // Continue to the next iteration of the loop (skip this row)
       }
 
       // --- Process as a regular (open/in progress) contest row ---
@@ -172,7 +174,7 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
        }
     });
 
-    // console.log(`Found ${rows.length} regular contest rows in main table.`);
+    console.log(`Found ${rows.length} regular contest rows in main table.`);
 
     // Fallback: If we didn't find the 'previsto' label in any table row's first cell,
     // check common alternative locations like a dedicated section or a differently structured table.
@@ -183,12 +185,12 @@ export async function scrapeConcursos(state: string): Promise<ConcursoData> {
             // Try to get the next sibling element's HTML (might be a div, p, or table)
             predictedContent = predictedHeading.next().html()?.trim() || null;
              if (predictedContent) {
-               // console.log("Found predicted content following a heading:", predictedContent);
+               console.log("Found predicted content following a heading (fallback):", predictedContent);
              } else {
                console.warn(`Found 'Concursos Previstos' heading but couldn't extract subsequent content.`);
              }
         } else {
-           // console.warn(`'div.label-previsto' not found in any main table row's first cell, and no 'Concursos Previstos' heading found.`);
+           console.warn(`'div.label-previsto' not found in any main table row's first cell, and no 'Concursos Previstos' heading found.`);
         }
     }
 

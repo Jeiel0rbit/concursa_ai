@@ -33,9 +33,14 @@ const Home: NextPage = () => {
     try {
       const data = await scrapeConcursos(selectedState);
       setConcursos(data);
+      if (!data.predicted && data.rows.length === 0) {
+        console.log("No regular or predicted contests found.");
+        // Optionally set a specific message if needed, though the table component handles empty rows.
+      }
     } catch (err) {
       console.error('Scraping failed:', err);
-      setError('Falha ao buscar os dados. Tente novamente mais tarde.');
+       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
+      setError(`Falha ao buscar os dados: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -48,7 +53,7 @@ const Home: NextPage = () => {
         <p className="text-lg text-muted-foreground">Encontre concursos públicos por estado.</p>
       </header>
 
-      <Card className="w-full max-w-4xl shadow-lg">
+      <Card className="w-full max-w-4xl shadow-lg bg-card">
         <CardHeader>
           <CardTitle>Selecione o Estado</CardTitle>
           <CardDescription>Escolha um estado para buscar os concursos disponíveis.</CardDescription>
@@ -63,9 +68,14 @@ const Home: NextPage = () => {
       </Card>
 
       {error && (
-        <div className="mt-8 w-full max-w-4xl text-center text-destructive">
-          {error}
-        </div>
+        <Card className="mt-8 w-full max-w-4xl shadow-lg bg-destructive text-destructive-foreground">
+           <CardHeader>
+             <CardTitle>Erro</CardTitle>
+           </CardHeader>
+           <CardContent>
+             <p>{error}</p>
+           </CardContent>
+        </Card>
       )}
 
       {loading && (
@@ -74,21 +84,24 @@ const Home: NextPage = () => {
         </div>
       )}
 
+      {/* Display Regular Concursos Table */}
       {concursos && !loading && (
         <div className="mt-8 w-full max-w-4xl">
            <ConcursoTable data={concursos} />
         </div>
       )}
 
-      {/* Display Predicted Concursos */}
+      {/* Display Predicted Concursos if available */}
       {concursos?.predicted && !loading && (
-        <Card className="mt-8 w-full max-w-4xl shadow-lg">
+        <Card className="mt-8 w-full max-w-4xl shadow-lg bg-card">
           <CardHeader>
             <CardTitle>Concursos Previstos</CardTitle>
             <CardDescription>Informações sobre concursos previstos para este estado.</CardDescription>
           </CardHeader>
           <CardContent>
-            {/* Render HTML content safely */}
+            {/* Render the scraped HTML content using dangerouslySetInnerHTML.
+                Be cautious with this if the source website is not trusted.
+                For concursosnobrasil, it should be relatively safe as it renders the contest details. */}
             <div dangerouslySetInnerHTML={{ __html: concursos.predicted }} />
           </CardContent>
         </Card>

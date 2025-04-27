@@ -67,7 +67,7 @@ const Home: NextPage = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center py-10 px-4">
       <header className="w-full max-w-5xl mb-8 text-center relative">
-        <h1 className="text-5xl font-bold text-primary mb-3">ConcursoScraper</h1>
+        <h1 className="text-5xl font-bold text-primary mb-3">Concursa Aí</h1>
         <p className="text-xl text-muted-foreground">Seu portal de concursos públicos.</p>
          {/* Info Button */}
          <Button
@@ -148,7 +148,7 @@ const Home: NextPage = () => {
 
 
       <footer className="w-full max-w-5xl mt-12 pt-6 border-t border-border text-center text-muted-foreground"> {/* Use theme border */}
-        <p>Desenvolvido com Next.js, ShadCN UI e <span className="text-primary font-semibold">Paixão</span>.</p>
+      <p>Desenvolvido com Next.js, ShadCN UI e <a href="https://jeiel.pages.dev" className="text-primary font-semibold">Jeiel Miranda</a>. <br/>¯\_( ͡◡ ͜ʖ ͡◡)_/¯</p>
       </footer>
     </div>
   );

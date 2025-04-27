@@ -24,7 +24,7 @@ const InfoDialog: React.FC<InfoDialogProps> = ({ open, onOpenChange }) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl text-primary"> {/* Use primary color for title */}
             <Info className="h-6 w-6" />
-            Sobre o ConcursoScraper
+            Sobre o Concursa Aí
           </DialogTitle>
           <DialogDescription className="text-muted-foreground pt-2">
             Informações sobre o projeto e tecnologias utilizadas.
@@ -36,7 +36,7 @@ const InfoDialog: React.FC<InfoDialogProps> = ({ open, onOpenChange }) => {
             <div>
               <h4 className="font-semibold">Propósito</h4>
               <p className="text-sm text-muted-foreground">
-                Este aplicativo web foi desenvolvido para facilitar a busca por concursos públicos no Brasil, agregando informações por estado a partir do site Concursos no Brasil.
+                Este aplicativo web foi desenvolvido para facilitar a busca por concursos públicos no Brasil, agregando informações por estado a partir do site Concursos no Brasil. O Concursa Aí não tem intenção de prejudicar e difamar a plataforma ou enganar os visitantes do Concursa Aí.
               </p>
             </div>
           </div>
@@ -49,7 +49,7 @@ const InfoDialog: React.FC<InfoDialogProps> = ({ open, onOpenChange }) => {
                 <a href="https://concursosnobrasil.com/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline"> {/* Use accent color for link */}
                   concursosnobrasil.com
                 </a>.
-                A precisão e disponibilidade das informações dependem da fonte original.
+                A precisão e disponibilidade das informações dependem da fonte original. Não há 100% de garantia de acompanhar os concursos até que plataforma imponha medidas de proteção a ataques cibernéticos. Prejudicando o funcionamento deste projeto.
               </p>
             </div>
           </div>
@@ -63,7 +63,7 @@ const InfoDialog: React.FC<InfoDialogProps> = ({ open, onOpenChange }) => {
             </div>
           </div>
            <p className="text-xs text-muted-foreground pt-2">
-            Nota: Web scraping pode ser sensível a mudanças na estrutura do site de origem.
+            Contato: jeiel.lima.miranda@gmail.com (chave pix para quaisquer valor, não sendo orbigatório). SPAM ou Flood serão rejeitados, talvez haja sucesso para você, mas não irá me incomodar com segurança imposta.
           </p>
         </div>
         <DialogFooter>
